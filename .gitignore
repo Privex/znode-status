@@ -1,0 +1,4 @@
+venv
+.vscode
+znode.cfg
+.env

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="List of ZNodes, information about payouts etc.">
+    <meta name="author" content="Privex Inc.">
+
+    <title>ZNode Status</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    
+
+    <div class="container">
+        <div id="znode-info">
+            <div class="jumbotron">
+                <h1>ZNode Status</h1>
+                <h4>Operated by Privex Inc. Cloud Hosting (
+                    <a href="https://www.privex.io">www.Privex.IO</a>)</h4>
+                <h4>Updates every minute. Prices live from Bittrex.</h4>
+                <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <strong>Current Payout per block:</strong>
+                    <span>[[ payout ]] XZC ($[[ usd_payout ]])</span>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <strong>Total ZNodes:</strong>
+                    <span>[[ total_znodes ]]</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <strong>Average time per payout ([[ payout ]] XZC):</strong>
+                    <span>[[ (total_znodes / 144).toFixed(2) ]] days</span>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <strong>Estimated income per month:</strong>
+                    <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
+                </div>
+            </div>
+            <h4>General information:</h4>
+            <p>ZNodes are paid on a payout schedule and may be picked semi-randomly. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
+            <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
+            <h3>More features coming soon :)</h3>
+        <hr/>
+        <div>
+        
+            <!--
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a>
+                </li>
+                <li role="presentation">
+                    <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
+                </li>
+                <li role="presentation">
+                    <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a>
+                </li>
+                <li role="presentation">
+                    <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a>
+                </li>
+            </ul>
+        
+             <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">...</div>
+                <div role="tabpanel" class="tab-pane" id="profile">...</div>
+                <div role="tabpanel" class="tab-pane" id="messages">...</div>
+                <div role="tabpanel" class="tab-pane" id="settings">...</div>
+            </div> -->
+        <div class="text-center">
+            <a href="https://www.privex.io" target="_BLANK">
+                <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" /><br/>
+                <strong>Buy Virtual and Dedicated servers with Cryptocurrency at Privex.IO</strong>
+            </a>
+        </div>
+        <br/>
+        <br/>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script>
+
+        var znodeinfo = new Vue({
+                el: '#znode-info',
+                delimiters: ['[[', ']]'],
+                data: {
+                    payout: 0,
+                    xzc_price: 0,
+                    total_znodes: 0,
+                },
+                computed: {
+                    daily_payout: function() {
+                        return (this.payout / (this.total_znodes / 144)).toFixed(3)
+                    },
+                    monthly_payout: function() {
+                        return (this.daily_payout * 31).toFixed(3);
+                    },
+                    monthly_payout_usd: function () {
+                        return (this.daily_payout * this.xzc_price * 31).toFixed(2);
+                    },
+                    usd_payout: function() {
+                        return (this.payout * this.xzc_price).toFixed(2);
+                    }
+                },
+                methods: {
+                    update: function() {
+                        $.get('/api/getblocktemplate', function(block_template) {
+                            this.payout = block_template['znode']['amount'] / 10e7;
+                        }.bind(this));
+                        $.get('/api/znode/count', function(total_znodes) {
+                            this.total_znodes = total_znodes;
+                        }.bind(this));
+                        $.get('/api/xzc_price', function (data) {
+                            this.xzc_price = parseFloat(data);
+                        }.bind(this));
+                    }
+                }
+            });
+        znodeinfo.update();
+        var timer = setInterval(znodeinfo.update, 30000);
+        </script>
+</body>
+
+</html>

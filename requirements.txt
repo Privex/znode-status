@@ -1,0 +1,7 @@
+Flask
+sqlalchemy
+requests
+flask-sqlalchemy
+validate_email
+humanize
+pymysql

@@ -1,0 +1,15 @@
+# The port for the server to listen on
+PORT = 9999
+# turn off in production (False)
+DEBUG = True
+# Used for sessions and CSRF token generation
+SECRET_KEY = ''
+
+BASE_URL = 'https://znodestatus.privex.io'
+
+ZCOIN_RPC_CONFIG = {
+    'hostname': '127.0.0.1',
+    'port': 8888,
+    'username': 'zcoin',
+    'password': ''
+}
