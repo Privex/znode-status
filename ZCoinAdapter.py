@@ -46,7 +46,6 @@ class ZCoinAdapter():
             self.url, data=json.dumps(payload), headers=headers).json()
         if response['error'] is not None:
             raise Exception(response['error'])
-        print(response)
         return response['result']
 
     def getinfo(self):

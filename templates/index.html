@@ -53,6 +53,7 @@
             <p>ZNodes are paid on a payout schedule and may be picked semi-randomly. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
             <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
             <h3>More features coming soon :)</h3>
+        </div>
         <hr/>
         <div>
         
@@ -78,6 +79,22 @@
                 <div role="tabpanel" class="tab-pane" id="messages">...</div>
                 <div role="tabpanel" class="tab-pane" id="settings">...</div>
             </div> -->
+            <table class="table" id="znode-list">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                        <th>Last Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="z in znodes">
+                        <td>[[ z.id ]]</td>
+                        <td>[[ z.value.status ]]</td>
+                        <td>[[ z.value.lastpaidtime ]]</td>
+                    </tr>
+                </tbody>
+            </table>
         <div class="text-center">
             <a href="https://www.privex.io" target="_BLANK">
                 <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" /><br/>
@@ -99,9 +116,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
         crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+    {% if DEBUG %}
+    <script src="https://vuejs.org/js/vue.js"></script>
+    {% else %}
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    {% endif %}
         <script>
+        var couchdb = '{{ couchdb }}';
+        function get_znodes(startkey, callback) {
+            $.get(couchdb + '/znodes/_design/by_lastpaidtime/_view/all?descending=true&limit=10')
+            .then(function(data) {
+                callback(JSON.parse(data));
+            })
+        }
+
+        var znodelist = new Vue({
+                el: '#znode-list',
+                delimiters: ['[[', ']]'],
+                data: {
+                    znodes: []
+                }
+        });
+        get_znodes(null, function(data) {
+            console.log(data.rows);
+            znodelist.znodes = data['rows'];
+        });        
 
         var znodeinfo = new Vue({
                 el: '#znode-info',

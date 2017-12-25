@@ -1,0 +1,45 @@
+[
+    {
+        "_id": "_design/status",
+        "_rev": "10-a6a53d0f354fb8e077259abf65a64b7d",
+        "language": "javascript",
+        "views": {
+            "ENABLED": {
+                "map": "function(doc) {\n\tif(doc.status == 'ENABLED') {\n\t\temit(doc.id, doc.status);\n\t}\n}",
+                "reduce": "_count"
+            },
+            "PRE_ENABLED": {}
+        }
+    },
+    {
+        "_id": "_design/by_lastpaidtime",
+        "_rev": "3-0f4305a0144e394f794aba5cd940a9ab",
+        "language": "javascript",
+        "views": {
+            "all": {
+                "map": "function(doc) { emit(doc.lastpaidtime, doc); }"
+            }
+        }
+    },
+    {
+        "_id": "_design/by_ip",
+        "_rev": "2-7cdf2563df0580521487a0baa7a3faed",
+        "language": "javascript",
+        "views": {
+            "viewname": {
+                "map": "function(doc) { emit(doc.ip, doc); }"
+            }
+        }
+    },
+    {
+        "_id": "_design/all",
+        "_rev": "6-4ca1433e2abf331b337b2bc9c5734cf1",
+        "language": "javascript",
+        "views": {
+            "all": {
+                "map": "function(doc) { \n\temit(doc.id, doc);\n}"
+            }
+        }
+    }
+    
+]

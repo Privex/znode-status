@@ -18,6 +18,11 @@ zcoin = ZCoinAdapter(**app.config['ZCOIN_RPC_CONFIG'])
 
 cache_data = {}
 
+
+@app.context_processor
+def inject_debug():
+    return dict(DEBUG=app.debug)
+
 def get_count():
     return zcoin.call('znode', 'count')
 
@@ -49,7 +54,7 @@ def _cache(name, func, mins=1):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', couchdb=app.config['PUBLIC_COUCHDB'])
 
 @app.route('/api/znode/count')
 def znode_count():
