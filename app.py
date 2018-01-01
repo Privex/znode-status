@@ -29,6 +29,15 @@ def get_count():
 def get_template():
     return zcoin.call('getblocktemplate')
 
+def get_znodelistfull():
+    return zcoin.call('znodelist', 'full')
+
+def get_znodelistqualify():
+    return zcoin.call('znodelist', 'qualify')
+
+def get_znodelistrank():
+    return zcoin.call('znodelist', 'rank')
+
 def get_price():
     btr = BittrexAdapter()
     btc_usd = btr.get_price('USDT_BTC')
@@ -69,6 +78,20 @@ def price():
 @app.route('/api/getblocktemplate')
 def getblocktemplate():
     return jsonify(_cache('blocktemplate', get_template ))
+
+@app.route('/api/getznodelist')
+def getznodelist():
+    return jsonify(_cache('znodelistfull', get_znodelistfull ))
+
+@app.route('/api/getznodelist/qualify')
+def getznodelistqualify():
+    return jsonify(_cache('znodelistqualify', get_znodelistqualify ))
+
+@app.route('/api/getznodelist/rank')
+def getznodelistrank():
+    return jsonify(_cache('znodelistrank', get_znodelistrank ))
+
+
 
 if __name__ == "__main__":
     db.init_app(app)
