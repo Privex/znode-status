@@ -30,25 +30,49 @@
             <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-4">
                 <strong>Current Payout per block:</strong>
                 <span>[[ payout ]] XZC ($[[ usd_payout ]])</span>
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-4">
                 <strong>Total ZNodes:</strong>
                 <span>[[ total_znodes ]]</span>
             </div>
+            <div class="col-xs-12 col-sm-4">
+                <strong>Total Ready ZNodes:</strong>
+                <span>[[ total_znode_ready ]]</span>
+            </div>
         </div>
+        <hr/>
         <div class="row">
-            <div class="col-xs-12 col-sm-6">
-                <strong>Average time per payout ([[ payout ]] XZC):</strong>
-                <span>[[ (total_znodes / 144).toFixed(2) ]] days</span>
+            <div class="col-sm-6">
+                <h2 class="text-center">Payout ready nodes</h2>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <strong>Avg time per payout ([[ payout ]] XZC):</strong>
+                        <span>[[ (total_znode_ready / 144).toFixed(2) ]] days</span>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <strong>Income per month:</strong>
+                        <span>[[ monthly_payout_ready ]] XZC ($[[ monthly_payout_usd_ready ]])</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-12 col-sm-6">
-                <strong>Estimated income per month:</strong>
-                <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
+            <div class="col-sm-6">
+                <h2 class="text-center">All nodes</h2>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <strong>Avg time per payout ([[ payout ]] XZC):</strong>
+                        <span>[[ (total_znodes / 144).toFixed(2) ]] days</span>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <strong>Income per month:</strong>
+                        <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
+                    </div>
+                </div>
             </div>
         </div>
+        <hr/>
         <h3>General information</h3>
         <p>ZNodes are paid on a payout schedule and may be picked semi-randomly. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
         <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
@@ -272,14 +296,33 @@
                     daily_payout: function() {
                         return (this.payout / (this.total_znodes / 144)).toFixed(3)
                     },
+                    daily_payout_ready: function () {
+                        return (this.payout / (this.total_znode_ready / 144)).toFixed(3)
+                    },
                     monthly_payout: function() {
                         return (this.daily_payout * 31).toFixed(3);
+                    },
+                    monthly_payout_ready: function () {
+                        return (this.daily_payout_ready * 31).toFixed(3);
                     },
                     monthly_payout_usd: function () {
                         return (this.daily_payout * this.xzc_price * 31).toFixed(2);
                     },
+                    monthly_payout_usd_ready: function () {
+                        return (this.daily_payout_ready * this.xzc_price * 31).toFixed(2);
+                    },
                     usd_payout: function() {
                         return (this.payout * this.xzc_price).toFixed(2);
+                    },
+                    
+                    total_znode_ready: function() {
+                        var count = 0;
+                        for (k in this.znodelist_qualify) { 
+                            if(this.znodelist_qualify[k] == "true") {
+                                count++;
+                            } 
+                        }
+                        return count;
                     },
                     znode: function() {
                         //console.log('znodelist', this.znodelist)
