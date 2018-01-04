@@ -406,26 +406,30 @@
                         }.bind(this));
                     },
                     znodesearchupdate: function() {
-                        $.get('/api/getznodelist', function (data) {
-                            this.znodelist = data;
+                        var deferreds = [
+                            $.get('/api/getznodelist', function (data) {
+                                this.znodelist = data;
+                            }.bind(this)),
+                            $.get('/api/getznodelist/qualify', function (data) {
+                                this.znodelist_qualify = data;
+                            }.bind(this)),
+                            $.get('/api/getznodelist/rank', function (data) {
+                                this.znodelist_rank = data;
+                            }.bind(this))
+                        ];
+                        $.when.apply(null, deferreds).done(function() {
                             znodelist.all_znodes = [];
-                            for (var key in data) {
-                                if (!data.hasOwnProperty(key)) continue;
+                            for (var key in this.znodelist) {
+                                if (!this.znodelist.hasOwnProperty(key)) continue;
                                 try {
-                                    znodelist.all_znodes.push(parseZnode(data[key], key))
-                                } catch(ignored) {
-                                    console.log(ignored)
+                                    znodelist.all_znodes.push(parseZnode(this.znodelist[key], key))
+                                } catch(e) {
+                                    console.log(e)
                                 }
                             }
                             znodelist.all_znodes.sort(function(a, b) {
                                 return (a.qualified ? 1 : 0 - b.qualified ? 1 : 0)
                             });
-                        }.bind(this));
-                        $.get('/api/getznodelist/qualify', function (data) {
-                            this.znodelist_qualify = data;
-                        }.bind(this));
-                        $.get('/api/getznodelist/rank', function (data) {
-                            this.znodelist_rank = data;
                         }.bind(this));
                     }
                 }
