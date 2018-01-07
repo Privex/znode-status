@@ -113,7 +113,9 @@
             </div>
         </div>
         <hr/>
-
+        <h3>Saved addresses (automatically added when you search)</h3>
+        <saved-list>
+        </saved-list>
         <!-- ZNode Search -->
         <!-- <h3>ZNode Search</h3> -->
         <div class="input-group">
@@ -237,8 +239,100 @@
 {% else %}
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 {% endif %}
+<script type="text/x-template" id="saved-addresses-template">
+  <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Address</th>
+                <th>Label</th>
+                <th>Qualified</th>
+                <th>Rank</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <saved-address-item v-for="label, address of saved_addresses" 
+                                v-bind="{label, address}"></saved-address-item>
+        </tbody>
+    </table>
+</script>
+
+<script type="text/x-template" id="saved-address-item-template">
+    <tr>
+        <td>[[ address ]]</td>
+        <td><input :v-model="label" /></td>
+        <!-- Parent is dirty but I don't care... -->
+        <td>[[ 'qualified' in find_znode(address) ? find_znode(address)['qualify_str'] : 'Not a ZNODE' ]]</td>
+        <td>[[ find_znode(address)['rank'] ]]</td>
+        <td><button class="btn btn-primary">Update Label</button></td>
+        <td><button class="btn btn-danger">Delete</button></td>
+    </tr>
+</script>
     <script>
         var couchdb = '{{ couchdb }}';
+        var znodeinfo = {find_znode: function() { return {} }}
+
+        var StorageAdapter = {
+            load: function() {
+                if (!('addresses' in localStorage)) {
+                    return {};
+                }
+                return JSON.parse(localStorage['addresses']);
+            },
+
+            save: function (address_map) {
+                localStorage['addresses'] = JSON.stringify(address_map);
+            },
+
+            save_address: function(address, label) {
+                var addresses = StorageAdapter.load();
+                addresses[address] = label;
+                StorageAdapter.save(addresses);
+            },
+
+            delete_address: function (address) {
+                var addresses = StorageAdapter.load();
+                delete addresses[address];
+                StorageAdapter.save(addresses);
+                return addresses;
+            }
+
+        }
+
+        function ZNodeHelper() {
+            // pass in objects znodelist qualify and rank  by-reference to be updated
+            // does not return
+            this.get_nodes = function (znodelist, qualify, rank) {
+                var deferreds = [
+                    $.get('/api/getznodelist', function (data) {
+                        znodelist = data;
+                    }.bind(this)),
+                    $.get('/api/getznodelist/qualify', function (data) {
+                        qualify = data;
+                    }.bind(this)),
+                    $.get('/api/getznodelist/rank', function (data) {
+                        rank = data;
+                    }.bind(this))
+                ];
+                $.when.apply(null, deferreds).done(function () {
+                    znodelist.all_znodes = [];
+                    for (var key in znodelist) {
+                        if (!this.znodelist.hasOwnProperty(key)) continue;
+                        try {
+                            znodelist.all_znodes.push(parseZnode(znodelist[key], key))
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    }
+                    znodelist.all_znodes.sort(function (a, b) {
+                        return (a.qualified ? 1 : 0 - b.qualified ? 1 : 0)
+                    });
+                }.bind(this));
+            }
+        }
+ 
+
         function get_znodes(startkey, callback) {
             $.get(couchdb + '/znodes/_design/by_lastpaidtime/_view/all?descending=true&limit=10')
             .then(function(data) {
@@ -311,7 +405,40 @@
             return minutes + ":" + seconds;
         }
 
-        var znodeinfo = new Vue({
+        Vue.component('saved-list', {
+            delimiters: ['[[', ']]'],
+            props: ['ranks', 'list', 'qualify'],
+            data: function() {
+                return {
+                    saved_addresses: StorageAdapter.load()
+                }
+            },
+            methods: {
+                load_addresses: function() {
+                    this.saved_addresses = StorageAdapter.load();
+                }
+            },
+            template: '#saved-addresses-template'
+        });
+
+        
+        // saved_addresses.load_addresses();
+        Vue.component('saved-address-item', {
+            delimiters: ['[[', ']]'],
+            props: ['address', 'label'],
+            data: function () {
+                return {
+                }
+            },
+            methods: {
+                find_znode: function (payee) {
+                    return znodeinfo.find_znode(payee)
+                }
+            },
+            template: '#saved-address-item-template'
+        });
+
+        znodeinfo = new Vue({
                 el: '#znode-info',
                 delimiters: ['[[', ']]'],
                 data: {
@@ -374,23 +501,7 @@
                         }).length;
                     },
                     znode: function() {
-                        //console.log('znodelist', this.znodelist)
-                        //console.log('znodesearchpayee' ,this.znodesearchpayee)
-                        var znode = {};
-                        // search
-                        for (var key in this.znodelist) {
-                            if (!this.znodelist.hasOwnProperty(key)) continue;
-                            try {
-                                if (this.znodelist[key].includes(" " + this.znodesearchpayee + " ")) {
-                                    // !! found !!
-                                    znode = parseZnode(this.znodelist[key], key);
-                                    break
-                                }
-                            } catch(ignored) {
-                                    console.log(ignored)
-                            }
-                        }
-                        return znode
+                        return this.find_znode(this.znodesearchpayee);
                     }
                 },
                 methods: {
@@ -405,35 +516,31 @@
                             this.xzc_price = parseFloat(data);
                         }.bind(this));
                     },
-                    znodesearchupdate: function() {
-                        var deferreds = [
-                            $.get('/api/getznodelist', function (data) {
-                                this.znodelist = data;
-                            }.bind(this)),
-                            $.get('/api/getznodelist/qualify', function (data) {
-                                this.znodelist_qualify = data;
-                            }.bind(this)),
-                            $.get('/api/getznodelist/rank', function (data) {
-                                this.znodelist_rank = data;
-                            }.bind(this))
-                        ];
-                        $.when.apply(null, deferreds).done(function() {
-                            znodelist.all_znodes = [];
-                            for (var key in this.znodelist) {
-                                if (!this.znodelist.hasOwnProperty(key)) continue;
-                                try {
-                                    znodelist.all_znodes.push(parseZnode(this.znodelist[key], key))
-                                } catch(e) {
-                                    console.log(e)
+                    find_znode: function(payee) {
+                        console.log('finding:', payee);
+                        var znode = {};
+                        // search
+                        for (var key in this.znodelist) {
+                            if (!this.znodelist.hasOwnProperty(key)) continue;
+                            try {
+                                if (this.znodelist[key].includes(" " + payee + " ")) {
+                                    // !! found !!
+                                    znode = parseZnode(this.znodelist[key], key);
+                                    break
                                 }
+                            } catch (ignored) {
+                                console.log(ignored)
                             }
-                            znodelist.all_znodes.sort(function(a, b) {
-                                return (a.qualified ? 1 : 0 - b.qualified ? 1 : 0)
-                            });
-                        }.bind(this));
+                        }
+                        return znode;
+                    },
+                    znodesearchupdate: function() {
+                        (new ZNodeHelper()).get_nodes(this.znodelist, this.znodelist_qualify, this.znodelist_rank);
                     }
                 }
             });
+        
+        
         znodeinfo.znodesearchupdate();
         znodeinfo.update();
         var timer = setInterval(znodeinfo.update, 30000);
