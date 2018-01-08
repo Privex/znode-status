@@ -166,7 +166,8 @@
                         <h4>Address: [[ znode.IP ]] <!--<span class="label label-success">Port Open!</span>--></h4>
                         <h4>Uptime: [[ znode.activeseconds ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
-                        <h4>Rank: [[ znode.rank ]]</h4>
+                        <h4>Rank (this block): [[ znode.rank ]]</h4>
+                        <h4 v-if="znode.queue_pos > -1">Queue Position: [[ znode.queue_pos ]] / [[ total_znode_qualified ]]</h4>
                         <hr>
                         <p>
                             Payout Status:
@@ -271,6 +272,7 @@
         //    znodelist.znodes = data['rows'];
         //});
 
+        var lastpaidrank = [];
         function parseZnode(full, key) {
             var znode = {};
             full = full.trim().split(/\s+/);
@@ -288,6 +290,25 @@
                 znode['qualified'] = znodeinfo.znodelist_qualify[key] == "true";
                 znode['qualify_reason'] = znodeinfo.znodelist_qualify[key];
                 znode['rank'] = znodeinfo.znodelist_rank[key];
+
+                if(znode['qualified']) {
+                    var exists = false;
+                    for (var idx in lastpaidrank) {
+                        if (lastpaidrank[idx]['payee'] == znode['payee'])
+                            exists = true;
+                    }
+                    if (!exists) {
+                        lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
+                        lastpaidrank.sort(function (a, b) {
+                            return a['lastpaidblock'] - b['lastpaidblock'];
+                        });
+                    }
+                    for (var queue_pos = 0; queue_pos < lastpaidrank.length; queue_pos++) {
+                        if (lastpaidrank[queue_pos]['payee'] == znode['payee'])
+                            break;
+                    }
+                }
+                znode['queue_pos'] = znode['qualified'] ? queue_pos : -1;
             }
             return znode
         }
