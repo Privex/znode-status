@@ -293,16 +293,18 @@
 
                 if(znode['qualified']) {
                     var exists = false;
-                    for (var idx in lastpaidrank) {
-                        if (lastpaidrank[idx]['payee'] == znode['payee'])
+                    for(var idx in lastpaidrank) {
+                        if(lastpaidrank[idx]['payee'] == znode['payee']) {
+                            lastpaidrank[idx]['lastpaidblock'] = znode['lastpaidblock'];
                             exists = true;
+                            break;
+                        }
                     }
-                    if (!exists) {
+                    if(!exists)
                         lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
-                        lastpaidrank.sort(function (a, b) {
-                            return b['lastpaidblock'] - a['lastpaidblock'];
-                        });
-                    }
+                    lastpaidrank.sort(function (a, b) {
+                        return b['lastpaidblock'] - a['lastpaidblock'];
+                    });
                     for (var queue_pos = 0; queue_pos < lastpaidrank.length; queue_pos++) {
                         if (lastpaidrank[queue_pos]['payee'] == znode['payee'])
                             break;
