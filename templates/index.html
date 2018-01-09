@@ -297,7 +297,7 @@
                         if(lastpaidrank[idx]['payee'] == znode['payee']) {
                             lastpaidrank[idx]['lastpaidblock'] = znode['lastpaidblock'];
                             exists = true;
-                            break;
+                            break
                         }
                     }
                     if(!exists)
@@ -305,9 +305,15 @@
                     lastpaidrank.sort(function (a, b) {
                         return a['lastpaidblock'] - b['lastpaidblock'];
                     });
-                    for (var queue_pos = 0; queue_pos < lastpaidrank.length; queue_pos++) {
-                        if (lastpaidrank[queue_pos]['payee'] == znode['payee'])
-                            break;
+                    for (var queue_pos = lastpaidrank.length; queue_pos > 0; queue_pos--) {
+                        if(znode['lastpaidblock'] > 0) // we can use the index for the actual position
+                            if(lastpaidrank[queue_pos - 1]['payee'] == znode['payee'])
+                                break;
+                        else if(lastpaidrank[queue_pos - 1]['lastpaidblock'] == 0) {
+                            queue_pos = '~' + queue_pos; // we use the highest zero payout queue position to estimate
+                            break
+                        }
+
                     }
                 }
                 znode['queue_pos'] = znode['qualified'] ? queue_pos : -1;
