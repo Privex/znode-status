@@ -303,7 +303,7 @@
                     if(!exists)
                         lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
                     lastpaidrank.sort(function (a, b) {
-                        return b['lastpaidblock'] - a['lastpaidblock'];
+                        return a['lastpaidblock'] - b['lastpaidblock'];
                     });
                     for (var queue_pos = 0; queue_pos < lastpaidrank.length; queue_pos++) {
                         if (lastpaidrank[queue_pos]['payee'] == znode['payee'])
