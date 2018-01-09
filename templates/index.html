@@ -167,7 +167,7 @@
                         <h4>Uptime: [[ znode.activeseconds ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
                         <h4>Rank (this block): [[ znode.rank ]]</h4>
-                        <h4 v-if="znode.queue_pos > -1">Queue Position: [[ znode.queue_pos ]] / [[ total_znode_qualified ]]</h4>
+                        <h4 v-if="znode.queue_pos != -1">Queue Position: [[ znode.queue_pos ]] / [[ total_znode_qualified ]]</h4>
                         <hr>
                         <p>
                             Payout Status:
@@ -305,11 +305,11 @@
                     lastpaidrank.sort(function (a, b) {
                         return a['lastpaidblock'] - b['lastpaidblock'];
                     });
-                    for (var queue_pos = lastpaidrank.length; queue_pos > 0; queue_pos--) {
-                        if(znode['lastpaidblock'] > 0) // we can use the index for the actual position
+                    for(var queue_pos = lastpaidrank.length; queue_pos > 0; queue_pos--) {
+                        if(znode['lastpaidblock'] > 0) { // we can use the index for the actual position
                             if(lastpaidrank[queue_pos - 1]['payee'] == znode['payee'])
                                 break;
-                        else if(lastpaidrank[queue_pos - 1]['lastpaidblock'] == 0) {
+                        } else if(lastpaidrank[queue_pos - 1]['lastpaidblock'] == 0) {
                             queue_pos = '~' + queue_pos; // we use the highest zero payout queue position to estimate
                             break
                         }
