@@ -300,7 +300,7 @@
                     if (!exists) {
                         lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
                         lastpaidrank.sort(function (a, b) {
-                            return a['lastpaidblock'] - b['lastpaidblock'];
+                            return b['lastpaidblock'] - a['lastpaidblock'];
                         });
                     }
                     for (var queue_pos = 0; queue_pos < lastpaidrank.length; queue_pos++) {
