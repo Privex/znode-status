@@ -167,7 +167,11 @@
                         <h4>Address: [[ znode.IP ]] <!--<span class="label label-success">Port Open!</span>--></h4>
                         <h4>Uptime: [[ znode.activeseconds ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
-                        <h4 v-if="znode.queue_pos != -1">Queue Position: [[ znode.queue_pos ]] / [[ total_znode_qualified ]]</h4>
+                        <h4 v-if="znode.queue_pos != -1">Queue Position:
+                            <span data-toggle="tooltip" data-placement="top" title="Queue position is based on last paid time">
+                                [[ znode.queue_pos ]] / [[ total_znode_qualified ]]
+                            </span>
+                        </h4>
                         <hr>
                         <p>
                             Payout Status:
@@ -225,13 +229,12 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
 {% if DEBUG %}
     <script src="https://vuejs.org/js/vue.js"></script>
@@ -466,6 +469,9 @@
         znodeinfo.znodesearchupdate();
         znodeinfo.update();
         var timer = setInterval(znodeinfo.update, 30000);
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     </script>
 </body>
 
