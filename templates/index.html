@@ -168,7 +168,7 @@
                         <h4>Uptime: [[ znode.activeseconds ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
                         <h4 v-if="znode.queue_pos != -1">Queue Position:
-                            <span data-toggle="tooltip" data-placement="top" title="Queue position is based on last paid time">
+                            <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
                                 [[ znode.queue_pos ]] / [[ total_znode_qualified ]]
                             </span>
                         </h4>
