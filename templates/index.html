@@ -40,6 +40,22 @@
             <h4>Updates every minute. Prices live from Bittrex.</h4>
             <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
         </div>
+
+        <!-- ZNode Search -->
+        <!-- <h3>ZNode Search</h3> -->
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Lookup ZNode by payee address"
+                   v-model="znodesearchpayee" :disabled="znodelist.length > 0">
+            <span class="input-group-btn">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#znodeModal"
+                    v-on:click="znodesearchupdate">
+                Search
+            </button>
+          </span>
+        </div>
+        <!-- /ZNode Search -->
+        <hr/>
         <div class="row">
             <div class="col-xs-12 col-md-4">
                 <div class="row">
@@ -114,22 +130,6 @@
             </div>
         </div>
         <hr/>
-
-        <!-- ZNode Search -->
-        <!-- <h3>ZNode Search</h3> -->
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Lookup ZNode by payee address"
-                   v-model="znodesearchpayee" :disabled="znodelist.length > 0">
-            <span class="input-group-btn">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#znodeModal"
-                    v-on:click="znodesearchupdate">
-                Search
-            </button>
-          </span>
-        </div>
-        <!-- /ZNode Search -->
-        <hr/>
         <div>
             <!--
             <ul class="nav nav-tabs" role="tablist">
@@ -203,25 +203,29 @@
     </div>
 
 </div>
-
-    <h3>Unpaid Nodes</h3>
-    <table class="table" id="znode-list">
-        <thead>
-            <tr>
-                <th>Payee</th>
-                <th>Payout Status</th>
-                <th>Node Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="z in znodes">
-                <td>[[ z.payee ]]</td>
-                <td v-if="z.qualified">Qualified</td>
-                <td v-else>Not Qualified</td>
-                <td>[[ z.status ]]</td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="znode-list">
+        <h3>Payment Pool</h3>
+        <p>These [[ tenth_network ]] nodes are the oldest 1/10th (by last payment) out of all enabled nodes.
+            If your node is in this list you will be paid in a block when your "rank" or "score" for that block is higher than any other node.
+            In other words, the luckiest node in this list will get paid next.
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Payee</th>
+                    <th>Last Paid Block</th>
+                    <th>Rank (this block)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="z in payment_pool">
+                    <td>[[ z.payee ]]</td>
+                    <td>[[ z.lastpaidblock ]]</td>
+                    <td>[[ z.rank ]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <br/>
     <br/>
@@ -263,10 +267,18 @@
                     all_znodes: []
                 },
                 computed: {
-                    znodes: function () {
+                    enabled_nodes: function () {
                         return this.all_znodes.filter(function(znode) {
-                            return znode.lastpaidblock == "0"
+                            return znode.status == 'ENABLED'
                         })
+                    },
+                    payment_pool: function() {
+                        return this.all_znodes.filter(function(znode) {
+                            return (znode.queue_pos + "").startsWith("~")
+                        })
+                    },
+                    tenth_network: function() {
+                        return parseInt(this.enabled_nodes.length / 10)
                     }
                 }
         });
@@ -289,6 +301,7 @@
             znode['IP'] = full[7];
 
             if(key) {
+                znode['txid'] = key.match(/COutPoint\(\w+, \d+\)/)[1];
                 znode['qualify_str'] = znodeinfo.znodelist_qualify[key];
                 znode['qualified'] = znodeinfo.znodelist_qualify[key] == "true";
                 znode['qualify_reason'] = znodeinfo.znodelist_qualify[key];
@@ -306,20 +319,23 @@
                     if(!exists)
                         lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
                     lastpaidrank.sort(function (a, b) {
-                        return a['lastpaidblock'] - b['lastpaidblock'];
+                        var k = 'lastpaidblock';
+                        return a[k] != b[k] ? a[k] - b[k] : parseInt(a['txid'], 16) - parseInt(b['txid'], 16);
                     });
                     for(var queue_pos = lastpaidrank.length; queue_pos > 0; queue_pos--) {
-                        if(znode['lastpaidblock'] > 0) { // we can use the index for the actual position
-                            if(lastpaidrank[queue_pos - 1]['payee'] == znode['payee'])
-                                break;
-                        } else if(lastpaidrank[queue_pos - 1]['lastpaidblock'] == 0) {
-                            queue_pos = '~' + queue_pos; // we use the highest zero payout queue position to estimate
+                        var i = queue_pos - 1;
+                        if(i == znodelist.tenth_network) {
+                            queue_pos = '~' + i; // we use the highest zero payout queue position to estimate
                             break
+                        } else { // we can use the index for the actual position
+                            if(lastpaidrank[i]['payee'] == znode['payee'])
+                                break;
                         }
-
                     }
+                    znode['queue_pos'] = queue_pos
+                } else {
+                    znode['queue_pos'] = -1
                 }
-                znode['queue_pos'] = znode['qualified'] ? queue_pos : -1;
             }
             return znode
         }
@@ -419,7 +435,7 @@
                                     break
                                 }
                             } catch(ignored) {
-                                    console.log(ignored)
+                                console.log(ignored)
                             }
                         }
                         return znode
@@ -459,9 +475,6 @@
                                     console.log(e)
                                 }
                             }
-                            znodelist.all_znodes.sort(function(a, b) {
-                                return (a.qualified ? 1 : 0 - b.qualified ? 1 : 0)
-                            });
                         }.bind(this));
                     }
                 }
