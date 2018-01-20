@@ -418,8 +418,9 @@
                         }).length;
                     },
                     znode: function() {
-                        if(!znodelist.all_znodes.length)
+                        if(!this.znodesearchpayee || !znodelist.all_znodes.length)
                             return {};
+                        localStorage.znodesearchpayee = this.znodesearchpayee;
                         for(var idx in znodelist.all_znodes)
                             if(znodelist.all_znodes[idx]['payee'].includes(this.znodesearchpayee))
                                 return znodelist.all_znodes[idx];
@@ -474,6 +475,13 @@
                             }
                         }.bind(this));
                     }
+                },
+                mounted: function() {
+                    this.$nextTick(function () {
+                        // Code that will run only after the
+                        // entire view has been rendered
+                        this.znodesearchpayee = localStorage.znodesearchpayee;
+                    })
                 }
             });
         znodeinfo.znodesearchupdate();
