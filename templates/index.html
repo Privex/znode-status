@@ -167,7 +167,7 @@
                         <h4>Address: [[ znode.IP ]] <!--<span class="label label-success">Port Open!</span>--></h4>
                         <h4>Uptime: [[ znode.activeseconds ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
-                        <h4 v-if="znode.queue_pos != -1">Queue Position:
+                        <h4 v-if="znode.status == 'ENABLED'">Queue Position:
                             <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
                                 [[ znode.queue_pos ]] / [[ total_znode_qualified ]]
                             </span>
@@ -418,23 +418,11 @@
                         }).length;
                     },
                     znode: function() {
-                        //console.log('znodelist', this.znodelist)
-                        //console.log('znodesearchpayee' ,this.znodesearchpayee)
-                        var znode = {};
-                        // search
-                        for (var key in this.znodelist) {
-                            if (!this.znodelist.hasOwnProperty(key)) continue;
-                            try {
-                                if (this.znodelist[key].includes(" " + this.znodesearchpayee + " ")) {
-                                    // !! found !!
-                                    znode = parseZnode(this.znodelist[key], key);
-                                    break
-                                }
-                            } catch(ignored) {
-                                console.log(ignored)
-                            }
-                        }
-                        return znode
+                        if(!znodelist.all_znodes.length)
+                            return {};
+                        for(var idx in znodelist.all_znodes)
+                            if(znodelist.all_znodes[idx]['payee'].includes(this.znodesearchpayee))
+                                return znodelist.all_znodes[idx];
                     }
                 },
                 methods: {
