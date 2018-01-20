@@ -326,7 +326,7 @@
             for(var queue_pos = znodelist.lastpaidrank.length; queue_pos > 0; queue_pos--) {
                 var i = queue_pos - 1;
                 if(queue_pos == znodelist.tenth_network) {
-                    queue_pos = '~' + i; // we use the highest zero payout queue position to estimate
+                    queue_pos = '~' + queue_pos; // we use the highest zero payout queue position to estimate
                     break
                 } else { // we can use the index for the actual position
                     if(znodelist.lastpaidrank[i]['payee'] == payee)
