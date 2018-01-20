@@ -185,6 +185,10 @@
                         <p>Status: [[ znode.status ]]</p>
                         <!-- <p>Confirmations: 400/1511</p><p>Uptime: 3d 11h 3m 10s/2d 10h 10m 50s</p></div> -->
                     <div class="modal-footer">
+                        <span v-if="loading">
+                            <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                                        v-bind:style="{ width: loading + '%'}"></div> </div>
+                        </span>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div><!-- /.modal-content -->
@@ -359,6 +363,28 @@
             return minutes + ":" + seconds;
         }
 
+        // returns a progress reporting XMLHttpRequest
+        // thanks to http://burnignorance.com/jquery-performance-tips/bootstrap-progress-bar-with-jquery-ajax/
+        function getXHRForProgressBar() {
+            var xhr = new window.XMLHttpRequest();
+            //Upload Progress
+            //xhr.upload.addEventListener("progress", function (evt)
+            //    {
+            //        if (evt.lengthComputable) {
+            //            var percentComplete = (evt.loaded / evt.total) * 100;
+            //            $('#znodelist-progress.progress').find('div.progress-bar').css({ "width": percentComplete + "%" }); } },
+            //    false);
+
+            //Download progress
+            xhr.addEventListener("progress", function (evt)
+                {
+                    if (evt.lengthComputable) {
+                        znodeinfo.loading = Math.max(znodeinfo.loading, (evt.loaded / evt.total) * 100);
+                    }},
+                false);
+            return xhr;
+        }
+
         var znodeinfo = new Vue({
                 el: '#znode-info',
                 delimiters: ['[[', ']]'],
@@ -369,7 +395,8 @@
                     znodelist: {},
                     znodelist_qualify: {},
                     znodelist_rank: {},
-                    znodesearchpayee: ""
+                    znodesearchpayee: "",
+                    loading: 0 // represents the max % complete out of all progress bars
                 },
                 computed: {
                     daily_payout: function() {
@@ -454,18 +481,39 @@
                         }.bind(this));
                     },
                     znodesearchupdate: function() {
+                        this.loading = true;
+                            $.ajax({
+                                url:'/api/getznodelist',
+                                xhr: getXHRForProgressBar('#znodelist-progress'),
+                                success: function (data) {
+                                    this.znodelist = data;
+                                }.bind(this)
+                            })
                         var deferreds = [
-                            $.get('/api/getznodelist', function (data) {
-                                this.znodelist = data;
-                            }.bind(this)),
-                            $.get('/api/getznodelist/qualify', function (data) {
-                                this.znodelist_qualify = data;
-                            }.bind(this)),
-                            $.get('/api/getznodelist/rank', function (data) {
-                                this.znodelist_rank = data;
-                            }.bind(this))
+                            $.ajax({
+                                url:'/api/getznodelist',
+                                xhr: getXHRForProgressBar,
+                                success: function (data) {
+                                    this.znodelist = data;
+                                }.bind(this)
+                            }),
+                            $.ajax({
+                                url:'/api/getznodelist/qualify',
+                                xhr: getXHRForProgressBar,
+                                success: function (data) {
+                                    this.znodelist_qualify = data;
+                                }.bind(this)
+                            }),
+                            $.ajax({
+                                url:'/api/getznodelist/rank',
+                                xhr: getXHRForProgressBar,
+                                success: function (data) {
+                                    this.znodelist_rank = data;
+                                }.bind(this)
+                            })
                         ];
                         $.when.apply(null, deferreds).done(function() {
+                            this.loading = 0;
                             znodelist.all_znodes = [];
                             for (var key in this.znodelist) {
                                 if (!this.znodelist.hasOwnProperty(key)) continue;
