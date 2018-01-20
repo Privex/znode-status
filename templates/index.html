@@ -264,21 +264,21 @@
                 el: '#znode-list',
                 delimiters: ['[[', ']]'],
                 data: {
-                    all_znodes: []
+                    all_znodes: [],
+                    tenth_network: 0
                 },
                 computed: {
                     enabled_nodes: function () {
-                        return this.all_znodes.filter(function(znode) {
+                        var nodes = this.all_znodes.filter(function(znode) {
                             return znode.status == 'ENABLED'
-                        })
+                        });
+                        this.tenth_network = parseInt(nodes.length / 10);
+                        return nodes
                     },
                     payment_pool: function() {
                         return this.all_znodes.filter(function(znode) {
                             return (znode.queue_pos + "").startsWith("~")
                         })
-                    },
-                    tenth_network: function() {
-                        return parseInt(this.enabled_nodes.length / 10)
                     }
                 }
         });
