@@ -265,20 +265,21 @@
                 delimiters: ['[[', ']]'],
                 data: {
                     all_znodes: [],
-                    tenth_network: 0
+                    lastpaidrank: [] // enabled nodes sorted by last paid
                 },
                 computed: {
                     enabled_nodes: function () {
-                        var nodes = this.all_znodes.filter(function(znode) {
+                        return this.all_znodes.filter(function(znode) {
                             return znode.status == 'ENABLED'
                         });
-                        this.tenth_network = parseInt(nodes.length / 10);
-                        return nodes
                     },
                     payment_pool: function() {
                         return this.all_znodes.filter(function(znode) {
-                            return (znode.queue_pos + "").startsWith("~")
+                            return znode.qualified && (znode.queue_pos + "").startsWith("~")
                         })
+                    },
+                    tenth_network: function () {
+                        return parseInt(this.lastpaidrank.length / 10);
                     }
                 }
         });
@@ -286,8 +287,6 @@
         //    console.log(data.rows);
         //    znodelist.znodes = data['rows'];
         //});
-
-        var lastpaidrank = [];
         function parseZnode(full, key) {
             var znode = {};
             full = full.trim().split(/\s+/);
@@ -301,43 +300,40 @@
             znode['IP'] = full[7];
 
             if(key) {
-                znode['txid'] = key.match(/COutPoint\(\w+, \d+\)/)[1];
+                znode['txid'] = key.match(/COutPoint\((\w+), (\d+)\)/)[1];
                 znode['qualify_str'] = znodeinfo.znodelist_qualify[key];
                 znode['qualified'] = znodeinfo.znodelist_qualify[key] == "true";
                 znode['qualify_reason'] = znodeinfo.znodelist_qualify[key];
                 znode['rank'] = znodeinfo.znodelist_rank[key];
 
-                if(znode['qualified']) {
+                if(znode['status'] == 'ENABLED') {
                     var exists = false;
-                    for(var idx in lastpaidrank) {
-                        if(lastpaidrank[idx]['payee'] == znode['payee']) {
-                            lastpaidrank[idx]['lastpaidblock'] = znode['lastpaidblock'];
+                    for(var idx in znodelist.lastpaidrank) {
+                        if(znodelist.lastpaidrank[idx]['payee'] == znode['payee']) {
+                            znodelist.lastpaidrank[idx]['lastpaidblock'] = znode['lastpaidblock'];
                             exists = true;
                             break
                         }
                     }
                     if(!exists)
-                        lastpaidrank.push({'payee': znode['payee'], 'lastpaidblock': znode['lastpaidblock']});
-                    lastpaidrank.sort(function (a, b) {
-                        var k = 'lastpaidblock';
-                        return a[k] != b[k] ? a[k] - b[k] : parseInt(a['txid'], 16) - parseInt(b['txid'], 16);
-                    });
-                    for(var queue_pos = lastpaidrank.length; queue_pos > 0; queue_pos--) {
-                        var i = queue_pos - 1;
-                        if(i == znodelist.tenth_network) {
-                            queue_pos = '~' + i; // we use the highest zero payout queue position to estimate
-                            break
-                        } else { // we can use the index for the actual position
-                            if(lastpaidrank[i]['payee'] == znode['payee'])
-                                break;
-                        }
-                    }
-                    znode['queue_pos'] = queue_pos
-                } else {
-                    znode['queue_pos'] = -1
+                        znodelist.lastpaidrank.push(znode);
                 }
+                znode['queue_pos'] = -1
             }
             return znode
+        }
+        function queuePos(payee) {
+            for(var queue_pos = znodelist.lastpaidrank.length; queue_pos > 0; queue_pos--) {
+                var i = queue_pos - 1;
+                if(queue_pos == znodelist.tenth_network) {
+                    queue_pos = '~' + i; // we use the highest zero payout queue position to estimate
+                    break
+                } else { // we can use the index for the actual position
+                    if(znodelist.lastpaidrank[i]['payee'] == payee)
+                        break;
+                }
+            }
+            return queue_pos
         }
 
         function fmttime(seconds) {
@@ -467,6 +463,7 @@
                         ];
                         $.when.apply(null, deferreds).done(function() {
                             znodelist.all_znodes = [];
+                            znodelist.lastpaidrank = [];
                             for (var key in this.znodelist) {
                                 if (!this.znodelist.hasOwnProperty(key)) continue;
                                 try {
@@ -474,6 +471,18 @@
                                 } catch(e) {
                                     console.log(e)
                                 }
+                            }
+                            znodelist.lastpaidrank.sort(function (a, b) {
+                                var k = 'lastpaidblock';
+                                if(a['qualified'] != b['qualified'])
+                                    if(b['qualified'])
+                                        return 1;
+                                    else
+                                        return -1;
+                                return a[k] != b[k] ? a[k] - b[k] : parseInt(a['txid'], 16) - parseInt(b['txid'], 16);
+                            });
+                            for (var idx in znodelist.all_znodes) {
+                                znodelist.all_znodes[idx]['queue_pos'] = queuePos(znodelist.all_znodes[idx]['payee'])
                             }
                         }.bind(this));
                     }
