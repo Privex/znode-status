@@ -45,11 +45,10 @@
         <!-- <h3>ZNode Search</h3> -->
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Lookup ZNode by payee address"
-                   v-model="znodesearchpayee" :disabled="znodelist.length > 0">
+                   v-model="znodesearchpayee" :disabled="znodelist.length > 0" @keyup.enter="znodesearchupdate">
             <span class="input-group-btn">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#znodeModal"
-                    v-on:click="znodesearchupdate">
+            <button type="button" class="btn btn-default" v-on:click="znodesearchupdate">
                 Search
             </button>
           </span>
@@ -165,7 +164,7 @@
                     </div>
                     <div class="modal-body">
                         <h4>Address: [[ znode.IP ]] <!--<span class="label label-success">Port Open!</span>--></h4>
-                        <h4>Uptime: [[ znode.activeseconds ]]</h4>
+                        <h4>Uptime: [[ znode.activeseconds | fmttime ]]</h4>
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
                         <h4 v-if="znode.status == 'ENABLED'">Queue Position:
                             <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
@@ -294,7 +293,7 @@
             znode['protocol'] = full[1];
             znode['payee'] = full[2];
             znode['lastseen'] = full[3];
-            znode['activeseconds'] = fmttime(full[4]);
+            znode['activeseconds'] = full[4];
             znode['lastpaidtime'] = full[5];
             znode['lastpaidblock'] = full[6];
             znode['IP'] = full[7];
@@ -336,25 +335,6 @@
             return queue_pos
         }
 
-        function fmttime(seconds) {
-            //var seconds = (millisec / 1000).toFixed(0);
-            var minutes = Math.floor(seconds / 60);
-            var hours = "";
-            if (minutes > 59) {
-                hours = Math.floor(minutes / 60);
-                hours = (hours >= 10) ? hours : "0" + hours;
-                minutes = minutes - (hours * 60);
-                minutes = (minutes >= 10) ? minutes : "0" + minutes;
-            }
-
-            seconds = Math.floor(seconds % 60);
-            seconds = (seconds >= 10) ? seconds : "0" + seconds;
-            if (hours != "") {
-                return hours + ":" + minutes + ":" + seconds;
-            }
-            return minutes + ":" + seconds;
-        }
-
         var znodeinfo = new Vue({
                 el: '#znode-info',
                 delimiters: ['[[', ']]'],
@@ -365,7 +345,8 @@
                     znodelist: {},
                     znodelist_qualify: {},
                     znodelist_rank: {},
-                    znodesearchpayee: ""
+                    znodesearchpayee: "",
+                    znode: {}
                 },
                 computed: {
                     daily_payout: function() {
@@ -416,14 +397,6 @@
                         return znodelist.all_znodes.filter(function(zn) {
                             return zn['status'] == 'ENABLED'
                         }).length;
-                    },
-                    znode: function() {
-                        if(!this.znodesearchpayee || !znodelist.all_znodes.length)
-                            return {};
-                        localStorage.znodesearchpayee = this.znodesearchpayee;
-                        for(var idx in znodelist.all_znodes)
-                            if(znodelist.all_znodes[idx]['payee'].includes(this.znodesearchpayee))
-                                return znodelist.all_znodes[idx];
                     }
                 },
                 methods: {
@@ -439,6 +412,14 @@
                         }.bind(this));
                     },
                     znodesearchupdate: function() {
+                        if(this.znodesearchpayee && znodelist.all_znodes.length) {
+                            $('#znodeModal').modal();
+                            this.znode = {};
+                            localStorage.znodesearchpayee = this.znodesearchpayee;
+                            $.get('/api2/znode/' + this.znodesearchpayee, function(znode) {
+                                this.znode = znode
+                            }.bind(this));
+                        }
                         var deferreds = [
                             $.get('/api/getznodelist', function (data) {
                                 this.znodelist = data;
@@ -482,6 +463,26 @@
                         // entire view has been rendered
                         this.znodesearchpayee = localStorage.znodesearchpayee;
                     })
+                },
+                filters: {
+                    fmttime: function (seconds) {
+                        //var seconds = (millisec / 1000).toFixed(0);
+                        var minutes = Math.floor(seconds / 60);
+                        var hours = "";
+                        if (minutes > 59) {
+                            hours = Math.floor(minutes / 60);
+                            hours = (hours >= 10) ? hours : "0" + hours;
+                            minutes = minutes - (hours * 60);
+                            minutes = (minutes >= 10) ? minutes : "0" + minutes;
+                        }
+
+                        seconds = Math.floor(seconds % 60);
+                        seconds = (seconds >= 10) ? seconds : "0" + seconds;
+                        if (hours != "") {
+                            return hours + ":" + minutes + ":" + seconds;
+                        }
+                        return minutes + ":" + seconds;
+                    }
                 }
             });
         znodeinfo.znodesearchupdate();

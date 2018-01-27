@@ -19,7 +19,7 @@ class BittrexAdapter():
         p = pair.split('_')
         pair = '{}-{}'.format(p[0], p[1])
         ticker_url = 'https://bittrex.com/api/v1.1/public/getticker?market=' + pair
-        print(ticker_url)
+        #print(ticker_url)
         r = self.s.get(ticker_url)
         j = r.json()
         if 'result' in j and 'Last' in j['result']:
