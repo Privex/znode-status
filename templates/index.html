@@ -168,7 +168,7 @@
                         <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
                         <h4 v-if="znode.status == 'ENABLED'">Queue Position:
                             <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
-                                [[ znode.queue_pos ]] / [[ total_znode_enabled ]]
+                                [[ znode.queue_pos | queuepos ]] / [[ total_znode_enabled ]]
                             </span>
                         </h4>
                         <hr>
@@ -482,6 +482,13 @@
                             return hours + ":" + minutes + ":" + seconds;
                         }
                         return minutes + ":" + seconds;
+                    },
+                    queuepos: function (queue_pos) {
+                        if(queue_pos <= znodelist.tenth_network) {
+                            return '~' + znodelist.tenth_network
+                        } else {
+                            return queue_pos
+                        }
                     }
                 }
             });
