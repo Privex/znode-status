@@ -429,6 +429,8 @@
                         return znodelist.all_znodes.filter(function(zn) {
                             if(zn['qualified'])
                                 return true;
+                            if(!zn['qualify_reason'])
+                                return false; // wtf??
                             var match = zn['qualify_reason'].match(/collateralAge=(\d+), znCount=(\d+)/);
                             return !!(match && (parseInt(match[2]) - parseInt(match[1])) <= 144 * 7);
                         }).length;
