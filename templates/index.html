@@ -281,6 +281,8 @@
                 var searchHistory = localStorage.getItem(this.historykey);
                 if(searchHistory)
                     searchHistory = searchHistory.split(',');
+                else
+                    searchHistory = [];
                 return createElement('select', {'class': 'form-control'}, searchHistory.map(function(addr) {
                     return createElement('option', addr);
                 }));
