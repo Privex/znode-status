@@ -469,9 +469,11 @@
                                     if(idx > -1) {
                                         searchHistory.splice(idx, 1);
                                     }
-                                    searchHistory.unshift(this.znodesearchpayee);
-                                    localStorage.setItem('searchHistory', searchHistory);
+                                } else {
+                                    searchHistory = [];
                                 }
+                                searchHistory.unshift(this.znodesearchpayee);
+                                localStorage.setItem('searchHistory', searchHistory);
                             }.bind(this));
                         }
                         var deferreds = [
