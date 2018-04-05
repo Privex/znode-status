@@ -122,7 +122,7 @@ def getznode(payee):
             znode['qualify_str'] = znodelistqualify[k]
             znode['qualified'] = znodelistqualify[k] == 'true'
             znode['qualify_reason'] = znodelistqualify[k]
-            znode['rank'] = znodelistrank[k]
+            znode['rank'] = znodelistrank[k] if k in znodelistrank else 'N/A'
             znode['queue_pos'] = get_queuepos(k, znodelistfull, znodelistqualify)
             return jsonify(znode)
     return abort(404)
