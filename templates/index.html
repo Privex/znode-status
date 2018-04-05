@@ -47,6 +47,8 @@
             </a>
             <br/>
             <br/>
+            <small class="pull-right">Last Update: Thu Apr 05 2018 05:16:44 GMT-0600 (Mountain Daylight Time)</small>
+            <br/>
         </div>
         <div class="jumbotron">
            
@@ -382,6 +384,7 @@
                     payout: 0,
                     xzc_price: 0,
                     total_znodes: 0,
+                    last_update: "",
                     znodelist: {},
                     znodelist_qualify: {},
                     znodelist_rank: {},
@@ -445,6 +448,7 @@
                     update: function() {
                         $.get('/api/getblocktemplate', function(block_template) {
                             this.payout = block_template['znode']['amount'] / 10e7;
+                            this.last_update = new Date(block_template['curtime'] * 1000);
                         }.bind(this));
                         $.get('/api/znode/count', function(total_znodes) {
                             this.total_znodes = total_znodes;
