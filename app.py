@@ -155,7 +155,7 @@ def refresh_cache():
     _cache('znodelistfull', get_znodelistfull, force=True)
     _cache('znodelistqualify', get_znodelistqualify, force=True)
     _cache('znodelistrank', get_znodelistrank, force=True)
-    t = threading.Timer(10, refresh_cache)
+    t = threading.Timer(50, refresh_cache)
     t.start()
 
 if __name__ == "__main__":

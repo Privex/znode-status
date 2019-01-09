@@ -47,7 +47,7 @@
             </a>
             <br/>
             <br/>
-            <small class="pull-right">Last Update: Thu Apr 05 2018 05:16:44 GMT-0600 (Mountain Daylight Time)</small>
+            <small class="pull-right">Last Update: [[ last_update ]]</small>
             <br/>
         </div>
         <div class="jumbotron">
@@ -111,7 +111,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
                         <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znode_qualified / 144).toFixed(2) ]] days</span>
+                        <span>[[ (total_znode_qualified / 288).toFixed(2) ]] days</span>
                     </div>
                     <div class="col-xs-12 col-sm-12">
                         <strong>Income per month:</strong>
@@ -124,7 +124,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
                         <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znode_qualified7 / 144).toFixed(2) ]] days</span>
+                        <span>[[ (total_znode_qualified7 / 288).toFixed(2) ]] days</span>
                     </div>
                     <div class="col-xs-12 col-sm-12">
                         <strong>Income per month:</strong>
@@ -137,7 +137,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12">
                         <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znodes / 144).toFixed(2) ]] days</span>
+                        <span>[[ (total_znodes / 288).toFixed(2) ]] days</span>
                     </div>
                     <div class="col-xs-12 col-sm-12">
                         <strong>Income per month:</strong>
@@ -393,13 +393,13 @@
                 },
                 computed: {
                     daily_payout: function() {
-                        return (this.payout / (this.total_znode_enabled / 144)).toFixed(3)
+                        return (this.payout / (this.total_znode_enabled / 288)).toFixed(3)
                     },
                     daily_payout_qualified: function () {
-                        return (this.payout / (this.total_znode_qualified / 144)).toFixed(3)
+                        return (this.payout / (this.total_znode_qualified / 288)).toFixed(3)
                     },
                     daily_payout_qualified7: function () {
-                        return (this.payout / (this.total_znode_qualified7 / 144)).toFixed(3)
+                        return (this.payout / (this.total_znode_qualified7 / 288)).toFixed(3)
                     },
                     monthly_payout: function() {
                         return (this.daily_payout * 31).toFixed(3);
@@ -435,7 +435,7 @@
                             if(!zn['qualify_reason'])
                                 return false; // wtf??
                             var match = zn['qualify_reason'].match(/collateralAge=(\d+), znCount=(\d+)/);
-                            return !!(match && (parseInt(match[2]) - parseInt(match[1])) <= 144 * 7);
+                            return !!(match && (parseInt(match[2]) - parseInt(match[1])) <= 288 * 7);
                         }).length;
                     },
                     total_znode_enabled: function() {
@@ -448,7 +448,7 @@
                     update: function() {
                         $.get('/api/getblocktemplate', function(block_template) {
                             this.payout = block_template['znode']['amount'] / 10e7;
-                            this.last_update = new Date(block_template['curtime'] * 1000);
+                            this.last_update = String(new Date(block_template['curtime'] * 1000));
                         }.bind(this));
                         $.get('/api/znode/count', function(total_znodes) {
                             this.total_znodes = total_znodes;
