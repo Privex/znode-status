@@ -480,6 +480,11 @@
                                 localStorage.setItem('searchHistory', searchHistory);
                             }.bind(this));
                         }
+                    },
+                    loadznodelist: function() {
+                        // this function blocks input for like 5s to load the lists due to thousands of calls to
+                        // queuePos() and parseZnode()
+                        // we run it on first page load only
                         var deferreds = [
                             $.get('/api/getznodelist', function (data) {
                                 this.znodelist = data;
@@ -554,6 +559,7 @@
                     }
                 }
             });
+        znodeinfo.loadznodelist();
         znodeinfo.znodesearchupdate();
         znodeinfo.update();
         var timer = setInterval(znodeinfo.update, 30000);
