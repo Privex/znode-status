@@ -11,7 +11,7 @@ from uuid import uuid4
 from werkzeug import serving
 
 from models import db
-from ZCoinAdapter import ZCoinAdapter
+from ZCoinAdapter import ZCoinAdapter, SyncingException
 from datetime import timedelta, datetime
 from adapters.BittrexAdapter import BittrexAdapter
 
@@ -53,58 +53,51 @@ def get_price():
     xzc_btc = btr.get_price('BTC_XZC')
     return xzc_btc * btc_usd
 
-def _cache(name, func, mins=1, force=False):
+def _cache(name, func=None, mins=60):
     global cache_data
-    if name not in cache_data:
+    if func:
         cache_data[name] = {}
         cache_data[name]['last_update'] = datetime.utcnow()
-        cache_data[name]['data'] = func()
-    
-    expire_date = cache_data[name]['last_update'] + timedelta(minutes=mins)
-    # not expired
-    if not force and expire_date > datetime.utcnow():
-        #print('Getting cached data')
-        return cache_data[name]['data']
-    else:
-        cache_data[name]['last_update'] = datetime.utcnow()
-        cache_data[name]['data'] = func()
-        return cache_data[name]['data']
-
+        try:
+            cache_data[name]['data'] = func()
+        except Exception:
+            pass
+    elif name in cache_data:
+        if datetime.utcnow() < cache_data[name]['last_update'] + timedelta(minutes=mins):
+            return cache_data[name]['data']
 @app.route('/')
 def index():
     return render_template('index.html', couchdb=app.config['PUBLIC_COUCHDB'])
 
 @app.route('/api/znode/count')
 def znode_count():
-    #print('zcoin count is', get_count())
-    return str(_cache('block_count', get_count))
-
+    return str(_cache('block_count'))
 
 @app.route('/api/xzc_price')
 def price():
-    return str(_cache('xzc_price', get_price))
+    return str(_cache('xzc_price'))
 
 @app.route('/api/getblocktemplate')
 def getblocktemplate():
-    return jsonify(_cache('blocktemplate', get_template))
+    return jsonify(_cache('blocktemplate'))
 
 @app.route('/api/getznodelist')
 def getznodelist():
-    return jsonify(_cache('znodelistfull', get_znodelistfull))
+    return jsonify(_cache('znodelistfull'))
 
 @app.route('/api/getznodelist/qualify')
 def getznodelistqualify():
-    return jsonify(_cache('znodelistqualify', get_znodelistqualify))
+    return jsonify(_cache('znodelistqualify'))
 
 @app.route('/api/getznodelist/rank')
 def getznodelistrank():
-    return jsonify(_cache('znodelistrank', get_znodelistrank))
+    return jsonify(_cache('znodelistrank'))
 
 @app.route('/api2/znode/<string:payee>')
 def getznode(payee):
-    znodelistfull = _cache('znodelistfull', get_znodelistfull)
-    znodelistqualify = _cache('znodelistqualify', get_znodelistqualify)
-    znodelistrank = _cache('znodelistrank', get_znodelistrank)
+    znodelistfull = _cache('znodelistfull')
+    znodelistqualify = _cache('znodelistqualify')
+    znodelistrank = _cache('znodelistrank')
     for k, v in znodelistfull.items():
         v = v.strip()
         if re.match('\w+\s\d+\s' + payee + '\s\d+\s', v):
@@ -148,13 +141,12 @@ def get_queuepos(key, znodelistfull, znodelistqualify):
     return -1
 
 def refresh_cache():
-    #print('Refreshing cache')
-    _cache('blocktemplate', get_template, force=True)
-    _cache('block_count', get_count, force=True)
-    _cache('xzc_price', get_price, force=True)
-    _cache('znodelistfull', get_znodelistfull, force=True)
-    _cache('znodelistqualify', get_znodelistqualify, force=True)
-    _cache('znodelistrank', get_znodelistrank, force=True)
+    _cache('blocktemplate', func=get_template)
+    _cache('block_count', func=get_count)
+    _cache('xzc_price', func=get_price)
+    _cache('znodelistfull', func=get_znodelistfull)
+    _cache('znodelistqualify', func=get_znodelistqualify)
+    _cache('znodelistrank', func=get_znodelistrank)
     t = threading.Timer(50, refresh_cache)
     t.start()
 

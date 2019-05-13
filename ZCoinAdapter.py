@@ -45,6 +45,9 @@ class ZCoinAdapter():
         response = requests.post(
             self.url, data=json.dumps(payload), headers=headers).json()
         if response['error'] is not None:
+            # see https://github.com/zcoinofficial/zcoin/blob/master/src/rpc/protocol.h for error codes
+            if response['error']['code'] == -10:
+                raise SyncingException(response['error']['message'])
             raise Exception(response['error'])
         return response['result']
 
@@ -60,3 +63,6 @@ class ZCoinAdapter():
 
     def getreceivedbyaddress(self, address, confirmations=1):
         return self.call('getreceivedbyaddress', address, confirmations)
+
+class SyncingException(Exception):
+    pass
