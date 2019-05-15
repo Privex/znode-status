@@ -56,11 +56,13 @@ def get_price():
 def _cache(name, func=None, mins=60):
     global cache_data
     if func:
-        cache_data[name] = {}
+        if name not in cache_data:
+            cache_data[name] = {}
         cache_data[name]['last_update'] = datetime.utcnow()
         try:
             cache_data[name]['data'] = func()
-        except Exception:
+        except Exception as e:
+            print('Caught exception while fetching {}: {}'.format(name, e))
             pass
     elif name in cache_data:
         if datetime.utcnow() < cache_data[name]['last_update'] + timedelta(minutes=mins):
