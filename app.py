@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 import functools
 import json
+import logging
 import re
 import threading
 import time
-import logging
+from os.path import dirname, join, abspath
 
 import redis
 from flask import Flask, render_template, jsonify, abort
+from privex.loghelper import LogHelper
 from werkzeug import serving
 from werkzeug.exceptions import ServiceUnavailable
 
@@ -17,11 +19,20 @@ from models import db
 
 app = Flask(__name__)
 
+BASE_DIR = abspath(dirname(abspath(__file__)))
+LOG_DIR = join(BASE_DIR, 'logs')
+
 # Load settings from the config file
 app.config.from_pyfile('znode.cfg')
 
 if app.config['DEBUG']:
     app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+_lh = LogHelper(handler_level=logging.DEBUG)
+
+_lh.add_console_handler()
+_lh.add_timed_file_handler(join(LOG_DIR, 'debug.log'), level=logging.DEBUG, when='D', interval=7, backups=4)
+_lh.add_timed_file_handler(join(LOG_DIR, 'error.log'), level=logging.WARNING, when='D', interval=7, backups=4)
 
 log = logging.getLogger(__name__)
 
@@ -98,6 +109,7 @@ def refresh_cache_key(*args):
 
 
 def refresh_cache():
+    log.debug('spawning threads')
     # spawn threads to refresh each cache key, spread out over a 55s period
     for idx, tup in enumerate(cache_list.items()):
         threading.Timer(idx * 55 / len(cache_list), functools.partial(refresh_cache_key, *tup)).start()
@@ -192,7 +204,7 @@ def get_queuepos(key):
     return -1
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # dev
     if not serving.is_running_from_reloader():
         refresh_cache()
     db.init_app(app)
@@ -201,3 +213,5 @@ if __name__ == "__main__":
         # if the tables already exist, this shouldn't cause any issues.
         db.create_all()
         app.run(debug=app.config['DEBUG'], port=app.config['PORT'])
+elif __name__ == 'app':  # production
+    refresh_cache()
