@@ -1,23 +1,19 @@
 #!/usr/bin/env python3
 import functools
 import json
+import re
 import threading
 import time
-import timeit
-import sched
+import logging
+
 import redis
-
-import re
-from flask import Flask, render_template, request, session, redirect, flash, jsonify, Response, abort
-from uuid import uuid4
-
+from flask import Flask, render_template, jsonify, abort
 from werkzeug import serving
 from werkzeug.exceptions import ServiceUnavailable
 
-from models import db
-from ZCoinAdapter import ZCoinAdapter, SyncingException
-from datetime import timedelta, datetime
+from ZCoinAdapter import ZCoinAdapter
 from adapters.BittrexAdapter import BittrexAdapter
+from models import db
 
 app = Flask(__name__)
 
@@ -26,6 +22,8 @@ app.config.from_pyfile('znode.cfg')
 
 if app.config['DEBUG']:
     app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+log = logging.getLogger(__name__)
 
 zcoin = ZCoinAdapter(**app.config['ZCOIN_RPC_CONFIG'])
 
@@ -36,20 +34,26 @@ cache_data = {}
 def inject_debug():
     return dict(DEBUG=app.debug)
 
+
 def get_count():
     return zcoin.call('evoznode', 'count')
+
 
 def get_template():
     return zcoin.call('getblocktemplate')
 
+
 def get_evoznodelist():
     return zcoin.call('evoznodelist', 'json')
+
 
 def get_protxlist():
     return zcoin.call('protx', 'list', 'registered', 'true')
 
+
 def get_evoznodewinners():
     return zcoin.call('evoznode', 'winners')
+
 
 def get_queue():
     znodelist = _cache('evoznodelist')
@@ -63,14 +67,16 @@ def get_queue():
             lastpaidblock_score = max(znode['lastpaidblock'], mnstate['registeredHeight'], mnstate['PoSeRevivedHeight'])
             txid_score = int(re.match('COutPoint\((\w+), (\d+)\)', outPoint).group(1), 16) / int('f' * 64, 16)
             queue.append((outPoint, lastpaidblock_score + txid_score))
-    queue.sort(key=lambda t: t[1]) # sort by queue score
+    queue.sort(key=lambda t: t[1])  # sort by queue score
     return [t[0] for t in queue]
+
 
 def get_price():
     btr = BittrexAdapter()
     btc_usd = btr.get_price('USDT_BTC')
     xzc_btc = btr.get_price('BTC_XZC')
     return str(xzc_btc * btc_usd)
+
 
 # register functions in here to enable cache refreshing
 cache_list = dict(
@@ -83,16 +89,19 @@ cache_list = dict(
     queue=get_queue,
 )
 
+
 def refresh_cache_key(*args):
-    print('Refreshing {}...'.format(args[0]))
+    log.info('Refreshing {}...'.format(args[0]))
     _cache(*args)
-    print('Done refreshing {}'.format(args[0]))
+    log.info('Done refreshing {}'.format(args[0]))
     threading.Timer(60, functools.partial(refresh_cache_key, *args)).start()
+
 
 def refresh_cache():
     # spawn threads to refresh each cache key, spread out over a 55s period
     for idx, tup in enumerate(cache_list.items()):
-        threading.Timer(idx*55/len(cache_list), functools.partial(refresh_cache_key, *tup)).start()
+        threading.Timer(idx * 55 / len(cache_list), functools.partial(refresh_cache_key, *tup)).start()
+
 
 def _cache(name, func=None, mins=60):
     r = redis.Redis()
@@ -101,9 +110,9 @@ def _cache(name, func=None, mins=60):
         data = {'last_update': time.time()}
         try:
             data['data'] = func()
-            r.set('cache:' +  name, json.dumps(data))
-        except Exception as e:
-            print('Caught exception while fetching {}: {}'.format(name, e))
+            r.set('cache:' + name, json.dumps(data))
+        except Exception:
+            log.exception('Caught exception while fetching {}'.format(name))
             pass
     elif data:
         data = json.loads(data.decode('utf-8'))
@@ -113,29 +122,36 @@ def _cache(name, func=None, mins=60):
             else:
                 return data['data']
 
+
 @app.route('/')
 def index():
     return render_template('index.html', couchdb=app.config['PUBLIC_COUCHDB'])
+
 
 @app.route('/api/xzc_price')
 def price():
     return str(_cache('xzc_price'))
 
+
 @app.route('/api/getblocktemplate')
 def getblocktemplate():
     return jsonify(_cache('blocktemplate'))
+
 
 @app.route('/api/znode/count')
 def znode_count():
     return jsonify(_cache('znode_count'))
 
+
 @app.route('/api/getznodelist')
 def getznodelist():
     return jsonify(_cache('evoznodelist'))
 
+
 @app.route('/api/getprotxlist')
 def getprotxlist():
     return jsonify(_cache('protxlist'))
+
 
 @app.route('/api/evoznode/winners')
 def getwinners():
@@ -152,6 +168,7 @@ def getwinners():
     out.sort(key=lambda o: o[0])
     return jsonify([o[1] for o in out])
 
+
 @app.route('/api2/znode/<string:address>')
 def getznode(address):
     znodelist = _cache('evoznodelist')
@@ -166,12 +183,14 @@ def getznode(address):
             return jsonify(znode)
     return abort(404)
 
+
 def get_queuepos(key):
     queue = _cache('queue')
     for idx, q in enumerate(queue):
         if q == key:
             return idx
     return -1
+
 
 if __name__ == "__main__":
     if not serving.is_running_from_reloader():
