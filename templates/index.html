@@ -22,226 +22,211 @@
 
 <body>
 
-<!-- Github Corner https://github.com/tholman/github-corners -->
-<a href="https://github.com/Privex/znode-status" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <!-- Github Corner https://github.com/tholman/github-corners -->
+    <a href="https://github.com/Privex/znode-status" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
 
-<div class="container" id="loading">
-    <div class="text-center">
-        <br/>
-        <br/>
-        <a href="https://www.privex.io" target="_BLANK">
-            <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" />
-        </a>
-        <br/>
-        <br/>
-        <i class='fa fa-spinner fa-spin ' style="font-size: 64px; color: #337ab7;"></i>
-    </div>
-</div>
-<div class="container" style="display: none" id="main">
-    <div id="znode-info">
+    <div class="container" id="loading">
         <div class="text-center">
+            <br/>
+            <br/>
             <a href="https://www.privex.io" target="_BLANK">
                 <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" />
-                <br/>
-                <strong>Buy Virtual and Dedicated servers with Cryptocurrency at Privex.IO</strong>
             </a>
             <br/>
             <br/>
-            <small class="pull-right">Last Update: [[ last_update ]]</small>
-            <br/>
+            <i class='fa fa-spinner fa-spin ' style="font-size: 64px; color: #337ab7;"></i>
         </div>
-        <div class="jumbotron">
-           
-            <h1>ZNode Status</h1>
-            <h4>Operated by Privex Inc. Cloud Hosting (
-                <a href="https://www.privex.io">www.Privex.IO</a>)</h4>
-            <h4>Updates every minute. Prices live from Bittrex.</h4>
-            <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
-        </div>
-
-        <!-- ZNode Search -->
-        <!-- <h3>ZNode Search</h3> -->
-        <!--<div class="input-group">
-            <input type="text" class="form-control" placeholder="Lookup ZNode by payee address"
-                   v-model="znodesearchpayee" :disabled="znodelist.length > 0" @keyup.enter="znodesearchupdate">
-            <span class="input-group-btn">
-            <button type="button" class="btn btn-default" v-on:click="znodesearchupdate">
-                Search
-            </button>
-          </span>
-        </div>-->
-        <znode-search v-once @update-znodesearchpayee="znodesearchupdate" historyKey="searchHistory"></znode-search>
-        <!-- /ZNode Search -->
-        <hr/>
-        <div class="row">
-            <div class="col-xs-12 col-md-4">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <strong>Current Payout per block:</strong>
-                        <span>[[ payout ]] XZC ($[[ usd_payout ]])</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-8">
-                <div class="row">
-                    <div class="col-xs-12 col-lg-4">
-                        <strong>Total ZNodes:</strong>
-                        <span>[[ total_znodes ]]</span>
-                    </div>
-                    <div class="col-xs-12 col-lg-4">
-                        <strong>Total Enabled ZNodes:</strong>
-                        <span>[[ total_znode_enabled ]]</span>
-                    </div>
-                    <div class="col-xs-12 col-lg-4">
-                        <strong>Total Qualified ZNodes:</strong>
-                        <span>[[ total_znode_qualified ]]</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr/>
-        <h3>General information</h3>
-        <p>ZNodes are paid on a payout schedule and may be picked semi-randomly. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
-        <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
-        <hr/>
-        <h3>Payout Stats</h3>
-        <div class="row">
-            <div class="col-sm-4">
-                <h4>Current</h4>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znode_qualified / 288).toFixed(2) ]] days</span>
-                    </div>
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Income per month:</strong>
-                        <span>[[ monthly_payout_qualified ]] XZC ($[[ monthly_payout_usd_qualified ]])</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <h4>In 7 days</h4>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znode_qualified7 / 288).toFixed(2) ]] days</span>
-                    </div>
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Income per month:</strong>
-                        <span>[[ monthly_payout_qualified7 ]] XZC ($[[ monthly_payout_usd_qualified7 ]])</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <h4>In 7+ days</h4>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Avg time per payout ([[ payout ]] XZC):</strong>
-                        <span>[[ (total_znodes / 288).toFixed(2) ]] days</span>
-                    </div>
-                    <div class="col-xs-12 col-sm-12">
-                        <strong>Income per month:</strong>
-                        <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr/>
-        <div>
-            <!--
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a>
-                </li>
-                <li role="presentation">
-                    <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
-                </li>
-                <li role="presentation">
-                    <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a>
-                </li>
-                <li role="presentation">
-                    <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a>
-                </li>
-            </ul>
-
-             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="home">...</div>
-                <div role="tabpanel" class="tab-pane" id="profile">...</div>
-                <div role="tabpanel" class="tab-pane" id="messages">...</div>
-                <div role="tabpanel" class="tab-pane" id="settings">...</div>
-            </div> -->
-        </div>
-
-
-        <div class="modal fade" id="znodeModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">ZNode [[ znode.payee ]]</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>Address: [[ znode.IP ]] <!--<span class="label label-success">Port Open!</span>--></h4>
-                        <h4>Uptime: [[ znode.activeseconds | fmttime ]]</h4>
-                        <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
-                        <h4 v-if="znode.status == 'ENABLED'">Queue Position:
-                            <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
-                                [[ znode.queue_pos | queuepos ]] / [[ total_znode_enabled ]]
-                            </span>
-                        </h4>
-                        <hr>
-                        <p>
-                            Payout Status:
-                            <span class="label label-success" v-if="znode.qualified">
-                                Qualified
-                            </span>
-                            <span class="label label-danger" v-else>
-                                Not Qualified ([[ znode.qualify_reason ]])
-                            </span>
-                        </p>
-                        <p>Status: [[ znode.status ]]</p>
-                        <!-- <p>Confirmations: 400/1511</p><p>Uptime: 3d 11h 3m 10s/2d 10h 10m 50s</p></div> -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-
-
-
-
-
-
-
-
-        <!---------------- END #znode-info -->
-
     </div>
+    <div class="container" style="display: none" id="main">
+        <div id="znode-info">
+            <div class="text-center">
+                <a href="https://www.privex.io" target="_BLANK">
+                    <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" />
+                    <br/>
+                    <strong>Buy Virtual and Dedicated servers with Cryptocurrency at Privex.IO</strong>
+                </a>
+                <br/>
+                <br/>
+                <small class="pull-right">Last updated [[ last_update ]]</small>
+                <br/>
+            </div>
+            <div class="jumbotron">
 
-</div>
-    <div id="znode-list">
+                <h1>ZNode Status</h1>
+                <h4>Operated by Privex Inc. Cloud Hosting (
+                    <a href="https://www.privex.io">www.Privex.IO</a>)</h4>
+                <h4>Updates every minute. Prices live from Bittrex.</h4>
+                <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
+            </div>
+
+            <!-- ZNode Search -->
+            <!-- <h3>ZNode Search</h3> -->
+            <!--<div class="input-group">
+                <input type="text" class="form-control" placeholder="Lookup ZNode by payee address"
+                       v-model="znodesearchpayee" :disabled="znodelist.length > 0" @keyup.enter="znodesearchupdate">
+                <span class="input-group-btn">
+                <button type="button" class="btn btn-default" v-on:click="znodesearchupdate">
+                    Search
+                </button>
+              </span>
+            </div>-->
+            <znode-search v-once @update-znodesearchpayee="znodesearchupdate" historyKey="searchHistory"></znode-search>
+            <!-- /ZNode Search -->
+            <hr/>
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong>Current Payout per block:</strong>
+                            <span>[[ payout ]] XZC ($[[ usd_payout ]])</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-8">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-4">
+                            <strong>Total ZNodes:</strong>
+                            <span>[[ total_znodes ]]</span>
+                        </div>
+                        <div class="col-xs-12 col-lg-4">
+                            <strong>Total Enabled ZNodes:</strong>
+                            <span>[[ total_znodes_enabled ]]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <h3>General information</h3>
+            <p>ZNodes are paid in a deterministic queue. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
+            <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
+            <hr/>
+            <h3>Payout Stats</h3>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h4>In 7+ days</h4>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <strong>Avg time per payout ([[ payout ]] XZC):</strong>
+                            <span>[[ (total_znodes / 288).toFixed(2) ]] days</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12">
+                            <strong>Income per month:</strong>
+                            <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div>
+                <!--
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a>
+                    </li>
+                </ul>
+
+                 <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">...</div>
+                    <div role="tabpanel" class="tab-pane" id="profile">...</div>
+                    <div role="tabpanel" class="tab-pane" id="messages">...</div>
+                    <div role="tabpanel" class="tab-pane" id="settings">...</div>
+                </div> -->
+            </div>
+
+
+            <div class="modal fade" id="znodeModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div v-if="Object.keys(znode) < 3">
+                            <div class="text-center">
+                                <br/>
+                                <br/>
+                                <a href="https://www.privex.io" target="_BLANK">
+                                    <img src="/static/logo.png" style="width: 300px;" alt="Privex Logo" />
+                                </a>
+                                <br/>
+                                <br/>
+                                <i class='fa fa-spinner fa-spin ' style="font-size: 64px; color: #337ab7;"></i>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <h4 class="modal-title">ZNode [[ znode.payee ]]</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Address: [[ znode.dmnstate.service ]] <!--<span class="label label-success">Port Open!</span>--></h4>
+                                <h4>Uptime: [[ znode.activeseconds | fmttime ]]</h4>
+                                <h4>Last Paid Block: [[ znode.lastpaidblock ]]</h4>
+                                <h4 v-if="znode.status == 'ENABLED'">Queue Position:
+                                    <span data-toggle="tooltip" data-placement="top" title="Based on last paid time">
+                                        [[ znode.queue_pos | queuepos ]] / [[ total_znodes_enabled ]]
+                                    </span>
+                                </h4>
+                                <hr>
+                                <p>
+                                    Status:
+                                    <span class="label label-success" v-if="znode.status == 'ENABLED'">
+                                        Enabled
+                                    </span>
+                                    <span class="label label-danger" v-else>
+                                        PoSe Banned
+                                    </span>
+                                </p>
+                                <!-- <p>Confirmations: 400/1511</p><p>Uptime: 3d 11h 3m 10s/2d 10h 10m 50s</p></div> -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+
+            <!---------------- END #znode-info -->
+
+        </div>
+        <div id="znode-list">
         <h3>Payment Pool</h3>
-        <p>These [[ tenth_network ]] nodes are the oldest 1/10th (by last payment) out of all enabled nodes.
-            If your node is in this list you will be paid in a block when your "rank" or "score" for that block is higher than any other node.
-            In other words, the luckiest node in this list will get paid next.
+        <p>These will get paid next.
         </p>
         <table class="table">
             <thead>
                 <tr>
                     <th>Payee</th>
                     <th>Last Paid Block</th>
-                    <th>Rank (this block)</th>
+                    <th>PoSe Revived Block</th>
+                    <th>ProTX Registered Block</th>
+                    <th>Next Paid Block</th>
+                    <th>Queue Position</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="z in payment_pool">
-                    <td>[[ z.payee ]]</td>
-                    <td>[[ z.lastpaidblock ]]</td>
-                    <td>[[ z.rank ]]</td>
+                <tr v-for="znode in winners">
+                    <td>[[ znode.payee ]]</td>
+                    <td>[[ znode.dmnState.lastPaidHeight ]]</td>
+                    <td>[[ znode.dmnState.PoSeRevivedHeight ]]</td>
+                    <td>[[ znode.dmnState.registeredHeight ]]</td>
+                    <td>[[ znode.nextPaidBlock ]]</td>
+                    <td>[[ znode.queuePos ]]</td>
                 </tr>
             </tbody>
         </table>
+    </div>
     </div>
 
     <br/>
@@ -256,6 +241,7 @@
             crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="/static/bootstrap-combobox.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 
 {% if DEBUG %}
     <script src="https://vuejs.org/js/vue.js"></script>
@@ -305,78 +291,9 @@
                 el: '#znode-list',
                 delimiters: ['[[', ']]'],
                 data: {
-                    all_znodes: [],
-                    lastpaidrank: [] // enabled nodes sorted by last paid
-                },
-                computed: {
-                    enabled_nodes: function () {
-                        return this.all_znodes.filter(function(znode) {
-                            return znode.status == 'ENABLED'
-                        });
-                    },
-                    payment_pool: function() {
-                        return this.all_znodes.filter(function(znode) {
-                            return znode.qualified && (znode.queue_pos + "").startsWith("~")
-                        })
-                    },
-                    tenth_network: function () {
-                        return parseInt(this.lastpaidrank.length / 10);
-                    }
+                    winners: []
                 }
         });
-        //get_znodes(null, function(data) {
-        //    console.log(data.rows);
-        //    znodelist.znodes = data['rows'];
-        //});
-        function parseZnode(full, key) {
-            var znode = {};
-            full = full.trim().split(/\s+/);
-            znode['status'] = full[0];
-            znode['protocol'] = full[1];
-            znode['payee'] = full[2];
-            znode['lastseen'] = full[3];
-            znode['activeseconds'] = full[4];
-            znode['lastpaidtime'] = full[5];
-            znode['lastpaidblock'] = full[6];
-            znode['IP'] = full[7];
-
-            if(key) {
-                znode['txid'] = key.match(/COutPoint\((\w+), (\d+)\)/)[1];
-                znode['qualify_str'] = znodeinfo.znodelist_qualify[key];
-                znode['qualified'] = znodeinfo.znodelist_qualify[key] == "true";
-                znode['qualify_reason'] = znodeinfo.znodelist_qualify[key];
-                znode['rank'] = znodeinfo.znodelist_rank[key];
-
-                if(znode['status'] == 'ENABLED') {
-                    var exists = false;
-                    for(var idx in znodelist.lastpaidrank) {
-                        if(znodelist.lastpaidrank[idx]['payee'] == znode['payee']) {
-                            znodelist.lastpaidrank[idx]['lastpaidblock'] = znode['lastpaidblock'];
-                            exists = true;
-                            break
-                        }
-                    }
-                    if(!exists)
-                        znodelist.lastpaidrank.push(znode);
-                }
-                znode['queue_pos'] = -1
-            }
-            return znode
-        }
-        function queuePos(payee) {
-            for(var queue_pos = znodelist.lastpaidrank.length; queue_pos > 0; queue_pos--) {
-                var i = queue_pos - 1;
-                if(queue_pos == znodelist.tenth_network) {
-                    queue_pos = '~' + queue_pos; // we use the highest zero payout queue position to estimate
-                    break
-                } else { // we can use the index for the actual position
-                    if(znodelist.lastpaidrank[i]['payee'] == payee)
-                        break;
-                }
-            }
-            return queue_pos
-        }
-
         var znodeinfo = new Vue({
                 el: '#znode-info',
                 delimiters: ['[[', ']]'],
@@ -384,22 +301,16 @@
                     payout: 0,
                     xzc_price: 0,
                     total_znodes: 0,
+                    total_znodes_enabled: 0,
                     last_update: "",
                     znodelist: {},
-                    znodelist_qualify: {},
-                    znodelist_rank: {},
                     znodesearchpayee: "",
-                    znode: {},
+                    znode: {dmnstate:{}},
+                    znode_loading: true
                 },
                 computed: {
                     daily_payout: function() {
-                        return (this.payout / (this.total_znode_enabled / 288)).toFixed(3)
-                    },
-                    daily_payout_qualified: function () {
-                        return (this.payout / (this.total_znode_qualified / 288)).toFixed(3)
-                    },
-                    daily_payout_qualified7: function () {
-                        return (this.payout / (this.total_znode_qualified7 / 288)).toFixed(3)
+                        return (this.payout / (this.total_znodes_enabled / 288)).toFixed(3)
                     },
                     monthly_payout: function() {
                         return (this.daily_payout * 31).toFixed(3);
@@ -410,48 +321,22 @@
                     monthly_payout_qualified: function () {
                         return (this.daily_payout_qualified * 31).toFixed(3);
                     },
-                    monthly_payout_qualified7: function () {
-                        return (this.daily_payout_qualified7 * 31).toFixed(3);
-                    },
                     monthly_payout_usd_qualified: function () {
                         return (this.daily_payout_qualified * this.xzc_price * 31).toFixed(2);
                     },
-                    monthly_payout_usd_qualified7: function () {
-                        return (this.daily_payout_qualified7 * this.xzc_price * 31).toFixed(2);
-                    },
                     usd_payout: function() {
                         return (this.payout * this.xzc_price).toFixed(2);
-                    },
-                    
-                    total_znode_qualified: function() {
-                        return znodelist.all_znodes.filter(function(zn) {
-                            return zn['qualified']
-                        }).length;
-                    },
-                    total_znode_qualified7: function() {
-                        return znodelist.all_znodes.filter(function(zn) {
-                            if(zn['qualified'])
-                                return true;
-                            if(!zn['qualify_reason'])
-                                return false; // wtf??
-                            var match = zn['qualify_reason'].match(/collateralAge=(\d+), znCount=(\d+)/);
-                            return !!(match && (parseInt(match[2]) - parseInt(match[1])) <= 288 * 7);
-                        }).length;
-                    },
-                    total_znode_enabled: function() {
-                        return znodelist.all_znodes.filter(function(zn) {
-                            return zn['status'] == 'ENABLED'
-                        }).length;
                     }
                 },
                 methods: {
                     update: function() {
                         $.get('/api/getblocktemplate', function(block_template) {
-                            this.payout = block_template['znode']['amount'] / 10e7;
-                            this.last_update = String(new Date(block_template['curtime'] * 1000));
+                            this.payout = block_template['znode'][0]['amount'] / 10e7;
+                            this.last_update = moment(new Date(block_template['curtime'] * 1000)).fromNow();
                         }.bind(this));
                         $.get('/api/znode/count', function(total_znodes) {
-                            this.total_znodes = total_znodes;
+                            this.total_znodes = total_znodes['total'];
+                            this.total_znodes_enabled = total_znodes['enabled'];
                         }.bind(this));
                         $.get('/api/xzc_price', function (data) {
                             this.xzc_price = parseFloat(data);
@@ -459,7 +344,7 @@
                     },
                     znodesearchupdate: function(payee) {
                         this.znodesearchpayee = payee;
-                        if(this.znodesearchpayee && znodelist.all_znodes.length) {
+                        if(this.znodesearchpayee) {
                             $('#znodeModal').modal();
                             this.znode = {};
                             $.get('/api2/znode/' + this.znodesearchpayee, function(znode) {
@@ -478,49 +363,24 @@
                                 }
                                 searchHistory.unshift(this.znodesearchpayee);
                                 localStorage.setItem('searchHistory', searchHistory);
-                            }.bind(this));
+                            }.bind(this)).fail(function() {
+                                $('#znodeModal').modal('hide');
+                                alert( "ZNode not found" );
+                            });
                         }
                     },
                     loadznodelist: function() {
-                        // this function blocks input for like 5s to load the lists due to thousands of calls to
-                        // queuePos() and parseZnode()
-                        // we run it on first page load only
                         var deferreds = [
                             $.get('/api/getznodelist', function (data) {
                                 this.znodelist = data;
                             }.bind(this)),
-                            $.get('/api/getznodelist/qualify', function (data) {
-                                this.znodelist_qualify = data;
-                            }.bind(this)),
-                            $.get('/api/getznodelist/rank', function (data) {
-                                this.znodelist_rank = data;
+                            $.get('/api/evoznode/winners', function (data) {
+                                znodelist.winners = data;
                             }.bind(this))
                         ];
                         $.when.apply(null, deferreds).done(function() {
                             $('#loading').css({'display': 'none'});
                             $('#main').css({'display': ''});
-                            znodelist.all_znodes = [];
-                            znodelist.lastpaidrank = [];
-                            for (var key in this.znodelist) {
-                                if (!this.znodelist.hasOwnProperty(key)) continue;
-                                try {
-                                    znodelist.all_znodes.push(parseZnode(this.znodelist[key], key))
-                                } catch(e) {
-                                    console.log(e)
-                                }
-                            }
-                            znodelist.lastpaidrank.sort(function (a, b) {
-                                var k = 'lastpaidblock';
-                                if(a['qualified'] != b['qualified'])
-                                    if(b['qualified'])
-                                        return 1;
-                                    else
-                                        return -1;
-                                return a[k] != b[k] ? a[k] - b[k] : parseInt(a['txid'], 16) - parseInt(b['txid'], 16);
-                            });
-                            for (var idx in znodelist.all_znodes) {
-                                znodelist.all_znodes[idx]['queue_pos'] = queuePos(znodelist.all_znodes[idx]['payee'])
-                            }
                         }.bind(this));
                     }
                 },
