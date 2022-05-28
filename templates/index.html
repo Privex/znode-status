@@ -59,7 +59,7 @@
                 <h4>Operated by Privex Inc. Cloud Hosting (
                     <a href="https://www.privex.io">www.Privex.IO</a>)</h4>
                 <h4>Updates every minute. Prices live from Bittrex.</h4>
-                <h3 class="text-center">1 XZC = $[[ xzc_price.toFixed(2) ]]</h3>
+                <h3 class="text-center">1 FIRO = $[[ xzc_price.toFixed(2) ]]</h3>
             </div>
 
             <!-- ZNode Search -->
@@ -81,7 +81,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <strong>Current Payout per block:</strong>
-                            <span>[[ payout ]] XZC ($[[ usd_payout ]])</span>
+                            <span>[[ payout ]] FIRO ($[[ usd_payout ]])</span>
                         </div>
                     </div>
                 </div>
@@ -100,8 +100,8 @@
             </div>
             <hr/>
             <h3>General information</h3>
-            <p>ZNodes are paid in a deterministic queue. A payout is an entire block of <strong>[[ payout ]] XZC</strong>.</p>
-            <p>A ZNode currently requires a 1000 XZC investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
+            <p>ZNodes are paid in a deterministic queue. A payout is an entire block of <strong>[[ payout ]] FIRO</strong>.</p>
+            <p>A ZNode currently requires a 1000 FIRO investment ($[[ (1000 * xzc_price).toFixed(2) ]]) held as collateral</p>
             <hr/>
             <h3>Payout Stats</h3>
             <div class="row">
@@ -109,12 +109,12 @@
                     <h4>In 7+ days</h4>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12">
-                            <strong>Avg time per payout ([[ payout ]] XZC):</strong>
+                            <strong>Avg time per payout ([[ payout ]] FIRO):</strong>
                             <span>[[ (total_znodes / 288).toFixed(2) ]] days</span>
                         </div>
                         <div class="col-xs-12 col-sm-12">
                             <strong>Income per month:</strong>
-                            <span>[[ monthly_payout ]] XZC ($[[ monthly_payout_usd ]])</span>
+                            <span>[[ monthly_payout ]] FIRO ($[[ monthly_payout_usd ]])</span>
                         </div>
                     </div>
                 </div>
@@ -246,11 +246,7 @@
     <script src="/static/bootstrap-combobox.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 
-{% if DEBUG %}
-    <script src="https://vuejs.org/js/vue.js"></script>
-{% else %}
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-{% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script>
         var couchdb = '{{ couchdb }}';
         function get_znodes(startkey, callback) {

@@ -84,9 +84,7 @@ def get_queue():
 
 def get_price():
     btr = BittrexAdapter()
-    btc_usd = btr.get_price('USDT_BTC')
-    xzc_btc = btr.get_price('BTC_XZC')
-    return str(xzc_btc * btc_usd)
+    return str(btr.get_price('USDT_FIRO'))
 
 
 # register functions in here to enable cache refreshing
